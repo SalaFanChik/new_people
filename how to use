@@ -1,0 +1,6 @@
+Все команды записаны в handlers
+
+файлы alembic удалить надо и в main.py свой url типа: postgresql+asyncpg://username:password@localhost:5432/db
+так же свой токен
+
+как сделать миграции с помощью alembic подробный инф тут https://makimo.com/blog/connect-to-postgresql-with-sqlalchemy-and-asyncio/
