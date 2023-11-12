@@ -9,6 +9,10 @@ def y(case_id, lang):
         callback_data=f"{case_id}:Yes")
     )
     builder.add(InlineKeyboardButton(
+        text=_("50/50", lang),
+        callback_data=f"{case_id}:Fifty")
+    )
+    builder.add(InlineKeyboardButton(
         text=_("Нет", lang),
         callback_data=f"{case_id}:No")
     )

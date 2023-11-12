@@ -18,6 +18,21 @@ association_table = Table(
 )
 
 
+association_table2 = Table(
+    "association_table2",
+    Base.metadata,
+    Column("Case_id", ForeignKey("Case.case_id"), primary_key=True),  # Внешний ключ к таблице дел
+    Column("NP_members_id", ForeignKey("NP_members.user_id"), primary_key=True),  # Внешний ключ к таблице участников
+    extend_existing=True
+)
+
+association_table3 = Table(
+    "association_table3",
+    Base.metadata,
+    Column("Case_id", ForeignKey("Case.case_id"), primary_key=True),  # Внешний ключ к таблице дел
+    Column("NP_members_id", ForeignKey("NP_members.user_id"), primary_key=True),  # Внешний ключ к таблице участников
+    extend_existing=True
+)
 
 class MemberReason(Base):
     __tablename__ = "Reason"
@@ -37,7 +52,10 @@ class NewCase(Base):
         secondary=association_table, back_populates="case",  # Связь многие ко многим с таблицей участников
     )
     people_rejected: Mapped[List["NewPeopleMembers"]] = relationship(
-        secondary=association_table, back_populates="case_rejected",  # Связь многие ко многим с таблицей участников
+        secondary=association_table2, back_populates="case_rejected",  # Связь многие ко многим с таблицей участников
+    )
+    people_fifty: Mapped[List["NewPeopleMembers"]] = relationship(
+        secondary=association_table3, back_populates="case_fifty",  # Связь многие ко многим с таблицей участников
     )
     image = Column(String)  # Путь к изображению (если есть)
     text = Column(String)  # Текстовое описание дела
@@ -54,7 +72,10 @@ class NewPeopleMembers(Base):
         secondary=association_table, back_populates="people_accepted",  # Связь многие ко многим с таблицей дел
     )
     case_rejected: Mapped[List["NewCase"]] = relationship(
-        secondary=association_table, back_populates="people_rejected",  # Связь многие ко многим с таблицей дел
+        secondary=association_table2, back_populates="people_rejected",  # Связь многие ко многим с таблицей дел
+    )
+    case_fifty: Mapped[List["NewCase"]] = relationship(
+        secondary=association_table3, back_populates="people_fifty",  # Связь многие ко многим с таблицей дел
     )
     phone_number = Column(BIGINT, unique=False)  # Номер телефона участника
     th_text = Column(Text, unique=False)  # Текстовое мнение пользователя о проекте

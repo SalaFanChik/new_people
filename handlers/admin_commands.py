@@ -175,10 +175,16 @@ async def my_handler(callback: CallbackQuery, session: AsyncSession, bot: Bot, s
         session.add(case)
         await session.commit()
         await bot.delete_message(chat_id=callback.from_user.id, message_id=callback.message.message_id) 
+    elif callback.data.split(":")[1] == "Fifty":
+        case_id = callback.data.split(":")[0]
+        await state.set_state(DCome.why)
+        await state.update_data(why=case_id, type="Fifty")
+        await callback.message.answer(_("Напишите пожалуйста причину", user.language))
+        await bot.delete_message(chat_id=callback.from_user.id, message_id=callback.message.message_id) 
     else:
         case_id = callback.data.split(":")[0]
         await state.set_state(DCome.why)
-        await state.update_data(why=case_id)
+        await state.update_data(why=case_id, type="No")
         await callback.message.answer(_("Напишите пожалуйста причину", user.language))
         await bot.delete_message(chat_id=callback.from_user.id, message_id=callback.message.message_id) 
 
@@ -189,9 +195,17 @@ async def why_handler(message: Message, state: FSMContext, session: AsyncSession
     user = user.scalar()
     data = await state.get_data()
     case_id = data['why']
-    case = await session.execute(select(NewCase).options(selectinload(NewCase.people_rejected)).where(NewCase.case_id == int(case_id)))
-    case = case.scalar()
-    case.people_rejected.append(user)
+
+    if data['type'] == "Fifty":
+        case = await session.execute(select(NewCase).options(selectinload(NewCase.people_fifty)).where(NewCase.case_id == int(case_id)))
+        case = case.scalar()
+        case.people_fifty.append(user)
+
+    else:
+        case = await session.execute(select(NewCase).options(selectinload(NewCase.people_rejected)).where(NewCase.case_id == int(case_id)))
+        case = case.scalar()
+        case.people_rejected.append(user)
+
     reason = MemberReason(
             reason_body=message.text,
             user_id = user.user_id,
@@ -199,6 +213,7 @@ async def why_handler(message: Message, state: FSMContext, session: AsyncSession
     )
     session.add(reason)    
     session.add(case)
+    await message.answer("Ок.")
     await session.commit()
 
 
@@ -209,16 +224,26 @@ async def cmd_check_user_case(message: Message, state: FSMContext, session: Asyn
     user = user.scalar()
     if user: 
         if user.is_admin:
+            print(1)
             # Извлекаем номер дела из текста команды
             case_id = message.text.split()[1]
             # Получаем дело из базы данных с участниками, которые ответили "Да"
             case = await session.execute(select(NewCase).options(selectinload(NewCase.people_rejected)).where(NewCase.case_id == int(case_id)))
             case = case.scalar()
+            casefif = await session.execute(select(NewCase).options(selectinload(NewCase.people_fifty)).where(NewCase.case_id == int(case_id)))
+            casefif = casefif.scalar()
             if case:
                 # Формируем сообщение с информацией о деле и участниках, которые ответили "Да"
                 sps = f'Название дела: {case.name}\nКоличество участников: {case.people_count}\nТекст: {case.text}\nУчастники, ответившие "Нет":\n'
                 
                 for i in case.people_rejected:
+                    reason = await session.execute(select(MemberReason).where(MemberReason.user_id == i.user_id and MemberReason.case_id == int(case_id)))
+                    reason = reason.scalar()
+                    sps += f'\n{i.user_id}-{i.name}-{i.phone_number}-Причина: {reason.reason_body}'
+
+                sps += f'\nУчастники, ответившие "50/50":\n'
+                
+                for i in casefif.people_fifty:
                     reason = await session.execute(select(MemberReason).where(MemberReason.user_id == i.user_id and MemberReason.case_id == int(case_id)))
                     reason = reason.scalar()
                     sps += f'\n{i.user_id}-{i.name}-{i.phone_number}-Причина: {reason.reason_body}'
