@@ -13,7 +13,7 @@ async def main():
     sessionmaker = async_sessionmaker(engine, expire_on_commit=False)
 
     # Инициализируем объект бота с токеном и режимом парсинга сообщений (HTML)
-    bot = Bot("5223424400:AAFAhZrmU_uuk9409pZkccBTuaRYuRait3U", parse_mode="HTML")
+    bot = Bot("6094011146:AAEll5hKivf2SyLhK7LEULzuVcwEXO24tr8", parse_mode="HTML")
     
     # Инициализируем диспетчер для обработки входящих сообщений и команд
     dp = Dispatcher()
