@@ -16,7 +16,7 @@ from sqlalchemy import select, update, delete
 from db import NewPeopleMembers, NewCase, NewPeopleChats, MemberReason 
 from sqlalchemy.orm import selectinload
 from .translations import _
-from aiogram.exceptions import TelegramBadRequest
+from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError
 
 
 # Создание объекта маршрутизатора для обработки команд и сообщений
@@ -61,8 +61,9 @@ async def bot_added_as_member(event: ChatMemberUpdated, bot: Bot, session: Async
 async def cmd_start(message: Message, state: FSMContext, session: AsyncSession, bot: Bot):
     # Проверяем, есть ли пользователь в базе данных
     try: 
-        a = await bot.get_chat_member(chat_id=-1001905549648, user_id=message.from_user.id)
-        if a.status.name in ["LEFT", "KICKED"]:
+        a = await bot.get_chat_member(chat_id=-1001708990158, user_id=message.from_user.id)
+        b = await bot.get_chat_member(chat_id=-1001826689952, user_id=message.from_user.id)
+        if a.status.name in ["LEFT", "KICKED"] or b.status.name in ["LEFT", "KICKED"]:
             pass
         else:
             user = await session.execute(select(NewPeopleMembers).where(NewPeopleMembers.user_id == message.from_user.id))
@@ -83,7 +84,7 @@ async def cmd_start(message: Message, state: FSMContext, session: AsyncSession, 
                     resize_keyboard=True,
                 ),)
 
-    except TelegramBadRequest:
+    except:
         pass
 
 
