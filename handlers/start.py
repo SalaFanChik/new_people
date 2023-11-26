@@ -60,9 +60,10 @@ async def bot_added_as_member(event: ChatMemberUpdated, bot: Bot, session: Async
 @router.message(Command("start"), F.chat.type == 'private')
 async def cmd_start(message: Message, state: FSMContext, session: AsyncSession, bot: Bot):
     # Проверяем, есть ли пользователь в базе данных
+
     try: 
-        a = await bot.get_chat_member(chat_id=-1001708990158, user_id=message.from_user.id)
-        b = await bot.get_chat_member(chat_id=-1001826689952, user_id=message.from_user.id)
+        a = await bot.get_chat_member(chat_id=-1001905549648, user_id=message.from_user.id)
+        b = await bot.get_chat_member(chat_id=-1001905549648, user_id=message.from_user.id)
         if a.status.name in ["LEFT", "KICKED"] or b.status.name in ["LEFT", "KICKED"]:
             pass
         else:
@@ -142,6 +143,7 @@ async def process_sg_text(message: Message, state: FSMContext, session: AsyncSes
         phone_number = int(data["phone_number"]),
         th_text = data["th_text"],
         sg_text = message.text, 
+        language = data["language"], 
     )
     session.add(user)
     await session.commit()

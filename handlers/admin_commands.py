@@ -85,7 +85,6 @@ async def cmd_add_case_2(message: Message, state: FSMContext, session: AsyncSess
         } 
     data = await state.update_data(text=dt)
     to_who = data['to_who']
-    print(to_who)
     case = NewCase(
             name=data['name'],
             people_count=len(list(user_count)), 
@@ -93,7 +92,7 @@ async def cmd_add_case_2(message: Message, state: FSMContext, session: AsyncSess
             text = data['text']['text']
         )
     # Отправляем сообщения всем пользователям и чатам с делом и его маркапом
-    user_count = await session.execute(select(NewPeopleMembers))
+    user_count = await session.execute(select(NewPeopleMembers).where(NewPeopleMembers.is_admin != True))
     session.add(case)
     await session.commit()
     await state.clear()
@@ -138,7 +137,7 @@ async def cmd_add_case_3(message: Message, state: FSMContext, session: AsyncSess
     session.add(case)      
     await session.commit()
     await state.clear()
-    user_count = await session.execute(select(NewPeopleMembers))
+    user_count = await session.execute(select(NewPeopleMembers).where(NewPeopleMembers.is_admin != True))
     # Отправляем сообщения всем пользователям и чатам с делом и его маркапом
     if to_who == 'users':
         for user in user_count.scalars():
@@ -228,25 +227,25 @@ async def cmd_check_user_case(message: Message, state: FSMContext, session: Asyn
             # Извлекаем номер дела из текста команды
             case_id = message.text.split()[1]
             # Получаем дело из базы данных с участниками, которые ответили "Да"
-            case = await session.execute(select(NewCase).options(selectinload(NewCase.people_rejected)).where(NewCase.case_id == int(case_id)))
+            case = await session.execute(select(NewCase).options(selectinload(NewCase.people_rejected), selectinload(NewCase.people_fifty)).where(NewCase.case_id == int(case_id)))
             case = case.scalar()
-            casefif = await session.execute(select(NewCase).options(selectinload(NewCase.people_fifty)).where(NewCase.case_id == int(case_id)))
-            casefif = casefif.scalar()
             if case:
                 # Формируем сообщение с информацией о деле и участниках, которые ответили "Да"
                 sps = f'Название дела: {case.name}\nКоличество участников: {case.people_count}\nТекст: {case.text}\nУчастники, ответившие "Нет":\n'
                 
                 for i in case.people_rejected:
-                    reason = await session.execute(select(MemberReason).where(MemberReason.user_id == i.user_id and MemberReason.case_id == int(case_id)))
+                    reason = await session.execute(select(MemberReason).where(MemberReason.case_id == int(case_id), MemberReason.user_id == i.user_id))
                     reason = reason.scalar()
-                    sps += f'\n{i.user_id}-{i.name}-{i.phone_number}-Причина: {reason.reason_body}'
+                    if reason:
+                        sps += f'\n{i.user_id}-{i.name}-{i.phone_number}-Причина: {reason.reason_body}'
 
                 sps += f'\nУчастники, ответившие "50/50":\n'
                 
-                for i in casefif.people_fifty:
-                    reason = await session.execute(select(MemberReason).where(MemberReason.user_id == i.user_id and MemberReason.case_id == int(case_id)))
+                for i in case.people_fifty:
+                    reason = await session.execute(select(MemberReason).where(MemberReason.user_id == i.user_id, MemberReason.case_id == int(case_id)))
                     reason = reason.scalar()
-                    sps += f'\n{i.user_id}-{i.name}-{i.phone_number}-Причина: {reason.reason_body}'
+                    if reason:
+                        sps += f'\n{i.user_id}-{i.name}-{i.phone_number}-Причина: {reason.reason_body}'
 
                 with open(f"{case_id}.txt", "w", encoding="utf-16") as file:
                     file.write(sps)

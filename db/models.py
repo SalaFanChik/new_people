@@ -80,7 +80,6 @@ class NewPeopleMembers(Base):
     phone_number = Column(BIGINT, unique=False)  # Номер телефона участника
     th_text = Column(Text, unique=False)  # Текстовое мнение пользователя о проекте
     sg_text = Column(Text, unique=False)  # Предложения пользователя по улучшению проекта
-    yon = Column(String, unique=False)  # Ответ по    льзователя на вопрос присоединиться ли к движению
     language = Column(String, unique=False)
 
 
