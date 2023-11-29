@@ -1,12 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    {{ user.name }}
-    {{ user.phone_number }}
-</body>
-</html>
+{% extends 'base.html' %}
+{% block content %}
+    <div class="user-profile">
+        <h1>{{ user.name }}</h1>
+        <p>{{ user.phone_number }}</p>
+        
+        <h2>Принятые</h2>
+        <div class="cases">
+            {% for case_a in cases_a %}
+                <div class="case">
+                    <p><strong>Название кейса:</strong> {{ case_a.name }}</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        <h2>50/50</h2>
+        <div class="reasons">
+            {% for case_f in reason_f %}
+                {% for key, objects in case_f.items() %}
+                    <div class="reason">
+                        <p><strong>Название кейса:</strong> {{ objects[0].name }}</p>
+                        <p><strong>Причина:</strong> {{ objects[1].reason_body }}</p>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+
+        <h2>Отказ</h2>
+        <div class="reasons">
+            {% for case_r in reason_r %}
+                {% for key, objects in case_r.items() %}
+                    <div class="reason">
+                        <p><strong>Название кейса:</strong> {{ objects[0].name }}</p>
+                        <p><strong>Причина:</strong> {{ objects[1].reason_body }}</p>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+
+        <a href="{{ url_for('users') }}" class="back-link">Back to user list</a>
+    </div>
+{% endblock %}

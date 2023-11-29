@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>Cases</h1>
+    <ul class="case-list">
+        {% for case in cases %}
+            <li>
+                <a href="{{ url_for('case_detail', case_id=case.case_id) }}" class="case-link">
+                    <span class="case-name">{{ case.name }}</span>
+                    <span class="case-description">{{ case.description }}</span>
+                </a>  
+            </li>
+        {% endfor %}
+{% endblock %}

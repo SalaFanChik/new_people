@@ -1,0 +1,83 @@
+/* Minimalistic styling */
+.user-list {
+    list-style: none;
+    padding: 0;
+}
+
+.user-list li {
+    margin-bottom: 10px;
+}
+
+.user-link {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.user-link:hover {
+    background-color: #f5f5f5;
+}
+
+.user-name {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.user-phone {
+    color: #666;
+    font-size: 0.9em;
+}
+
+
+/* Basic styling */
+.user-profile {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+h2 {
+    font-size: 20px;
+    margin-top: 20px;
+}
+
+p {
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.cases,
+.reasons {
+    margin-bottom: 20px;
+}
+
+.case,
+.reason {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.back-link {
+    display: block;
+    margin-top: 20px;
+    text-decoration: none;
+    color: #333;
+    font-size: 16px;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+

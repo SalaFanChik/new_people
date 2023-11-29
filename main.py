@@ -3,17 +3,19 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.utils.callback_answer import CallbackAnswerMiddleware
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from handlers import start, admin_commands  # Импортируем ваши обработчики команд из модуля handlers
-from middlewares import DbSessionMiddleware
+from middlewares import DbSessionMiddleware, ThrottlingMiddleware
 from fastapi import FastAPI, Request
 import logging
 from contextlib import asynccontextmanager
 from db.db_helper import db_helper
 from admin.views import router as admin_router
+from fastapi.staticfiles import StaticFiles
+
 
 TOKEN = "5223424400:AAFAhZrmU_uuk9409pZkccBTuaRYuRait3U"
 
 WEBHOOK_PATH = f"/bot/{TOKEN}"
-NGROK_URL = "https://598a-93-170-212-35.ngrok-free.app"
+NGROK_URL = "https://a0e2-212-96-80-141.ngrok-free.app"
 WEBHOOK_URL = NGROK_URL + WEBHOOK_PATH
 
 
@@ -42,11 +44,16 @@ sessionmaker = async_sessionmaker(engine, expire_on_commit=False)
 """
 dp.update.middleware(DbSessionMiddleware(session_pool=db_helper.session_factory))
 
+dp.message.middleware(ThrottlingMiddleware())
+
 dp.callback_query.middleware(CallbackAnswerMiddleware())
 
 
 dp.include_router(start.router)
 dp.include_router(admin_commands.router)
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 
 @app.post(WEBHOOK_PATH)
 async def bot_webhook(Update: types.Update, request: Request):

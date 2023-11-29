@@ -1,5 +1,7 @@
-from .db import DbSessionMiddleware
+from .db import DbSessionMiddleware 
+from .throttling import ThrottlingMiddleware
 
 __all__ = [
-    "DbSessionMiddleware"
+    "DbSessionMiddleware",
+    "ThrottlingMiddleware",
 ]

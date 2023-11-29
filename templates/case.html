@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>{{ case.name }}</h1>
+    <h1>Accepted People:</h1>
+    <ul>
+        {% for person in case.people_accepted %}
+            <li><a href="{{ url_for('user_detail', user_id=person.user_id)}}">{{ person.name }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <h1>Rejected People:</h1>
+    <ul>
+        {% for person in case.people_rejected %}
+            <li><a href="{{ url_for('user_detail', user_id=person.user_id)}}">{{ person.name }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <h1>Fifty People:</h1>
+    <ul>
+        {% for person in case.people_fifty %}
+            <li><a href="{{ url_for('user_detail', user_id=person.user_id)}}">{{ person.name }}</a></li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}
+
