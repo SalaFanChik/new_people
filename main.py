@@ -39,9 +39,7 @@ app = FastAPI(lifespan=lifespan)
 
 app.include_router(admin_router)
 
-"""engine = create_async_engine(url="postgresql+asyncpg://alik:alik2006@localhost:5432/new_people_db", echo=True)
-sessionmaker = async_sessionmaker(engine, expire_on_commit=False)
-"""
+
 dp.update.middleware(DbSessionMiddleware(session_pool=db_helper.session_factory))
 
 dp.message.middleware(ThrottlingMiddleware())

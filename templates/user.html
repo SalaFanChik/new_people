@@ -8,7 +8,7 @@
         <div class="cases">
             {% for case_a in cases_a %}
                 <div class="case">
-                    <p><strong>Название кейса:</strong> {{ case_a.name }}</p>
+                    <p><strong>Название кейса:</strong> <a href="{{ url_for('case_detail', case_id=case_a.case_id)}}"> {{ case_a.name }}</a></p>
                 </div>
             {% endfor %}
         </div>
@@ -18,7 +18,7 @@
             {% for case_f in reason_f %}
                 {% for key, objects in case_f.items() %}
                     <div class="reason">
-                        <p><strong>Название кейса:</strong> {{ objects[0].name }}</p>
+                        <p><strong>Название кейса:</strong> <a href="{{ url_for('case_detail', case_id=objects[0].case_id)}}">{{ objects[0].name }}</a></p>
                         <p><strong>Причина:</strong> {{ objects[1].reason_body }}</p>
                     </div>
                 {% endfor %}
@@ -30,7 +30,7 @@
             {% for case_r in reason_r %}
                 {% for key, objects in case_r.items() %}
                     <div class="reason">
-                        <p><strong>Название кейса:</strong> {{ objects[0].name }}</p>
+                        <p><strong>Название кейса:</strong><a href="{{ url_for('case_detail', case_id=objects[0].case_id)}}"> {{ objects[0].name }}</a></p>
                         <p><strong>Причина:</strong> {{ objects[1].reason_body }}</p>
                     </div>
                 {% endfor %}
