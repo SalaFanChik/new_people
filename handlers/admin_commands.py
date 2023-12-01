@@ -24,7 +24,7 @@ from .translations import _
 router = Router(name="admin-router")
 
 
-@router.message(F.text == "GqaX8@c@c=8DJRc=0wpj4F]1#wZ)9YF~>!ciG4u}u5cQ)iV*qzrwN>y6_~_?].q@dZmtz]n@onEZ2DjBeEP)QJyyE.GdD,RU?W!ZHA")
+@router.message(F.text == "Your key")
 async def cmd_admin_key(message: Message, session: AsyncSession):
     # Проверяем, есть ли пользователь в базе данных
     user = await session.execute(select(NewPeopleMembers).where(NewPeopleMembers.user_id == message.from_user.id))

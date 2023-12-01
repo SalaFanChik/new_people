@@ -6,7 +6,7 @@ ZHA_Mailing is a Python project designed for sending messages to both chats and 
 
 ### Prerequisites
 
-- Python 3.6+
+- Python 3.10+
 - PostgreSQL database
 
 ### Migrations
