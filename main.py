@@ -1,7 +1,5 @@
-import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.utils.callback_answer import CallbackAnswerMiddleware
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from handlers import start, admin_commands  # Импортируем ваши обработчики команд из модуля handlers
 from middlewares import DbSessionMiddleware, ThrottlingMiddleware
 from fastapi import FastAPI, Request
